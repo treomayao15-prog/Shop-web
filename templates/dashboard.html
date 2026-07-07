@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="mb-4">Tổng Quan Hệ Thống</h2>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 text-center border-primary shadow"><h1 class="text-primary">{{ total }}</h1><p class="mb-0 text-muted">Tổng Đơn</p></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center border-warning shadow"><h1 class="text-warning">{{ pending }}</h1><p class="mb-0 text-muted">Chờ Duyệt</p></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center border-success shadow"><h1 class="text-success">{{ approved }}</h1><p class="mb-0 text-muted">Đã Duyệt</p></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center border-info shadow"><h1 class="text-info">{{ codes }}</h1><p class="mb-0 text-muted">Mã Đã Gửi</p></div>
+    </div>
+</div>
+
+<h4>Đơn Hàng Mới Nhất</h4>
+<div class="card p-3 table-responsive">
+    <table class="table table-dark table-hover align-middle">
+        <thead><tr><th>ID</th><th>Telegram ID</th><th>Ảnh Bill</th><th>Trạng Thái</th><th>Hành Động</th></tr></thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td>#{{ o['id'] }}</td>
+                <td>{{ o['telegram_id'] }}</td>
+                <td><a href="/uploads/bills/{{ o['bill_image'] }}" target="_blank"><img src="/uploads/bills/{{ o['bill_image'] }}" height="50" class="rounded"></a></td>
+                <td>
+                    {% if o['status'] == 0 %}<span class="badge bg-warning text-dark">Chờ duyệt</span>
+                    {% elif o['status'] == 1 %}<span class="badge bg-success">Đã duyệt</span>
+                    {% else %}<span class="badge bg-danger">Từ chối</span>{% endif %}
+                </td>
+                <td>
+                    {% if o['status'] == 0 %}
+                    <a href="/action/order/{{ o['id'] }}/approve" class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i> Duyệt</a>
+                    <a href="/action/order/{{ o['id'] }}/reject" class="btn btn-sm btn-danger"><i class="fa-solid fa-xmark"></i> Hủy</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
